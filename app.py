@@ -26,7 +26,9 @@ arrival_min = st.number_input("Arrival Minute", 0, 59)
 duration_mins = st.number_input("Duration (minutes)", 30, 2000)
 
 # ----- prediction button -----
+# ----- fixed prediction block -----
 if st.button("Predict Price"):
+    # Initialize basic numeric data
     input_data = {
         'Total_Stops': total_stops,
         'Journey_day': journey_day,
@@ -36,15 +38,17 @@ if st.button("Predict Price"):
         'Duration_mins': duration_mins
     }
 
-    input_df = pd.DataFrame([input_data])
-
-    # add missing columns
+    # Add Categorical logic: Set the selected Airline, Source, and Destination to 1
+    # This matches the One-Hot Encoding used during training
     for col in features:
-        if col not in input_df.columns:
-            input_df[col] = 0
+        if col not in input_data:
+            if col == f"Airline_{airline}" or col == f"Source_{source}" or col == f"Destination_{destination}":
+                input_data[col] = 1
+            else:
+                input_data[col] = 0
 
-    input_df = input_df[features]
+    input_df = pd.DataFrame([input_data])
+    input_df = input_df[features] # Reorder columns to match the model
 
     prediction = model.predict(input_df)[0]
-
     st.success(f"💰 Estimated Flight Price: ₹{int(prediction)}")
