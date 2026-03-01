@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 
 # load model & features
-model = joblib.load('flight_price_model.pkl')
+model = joblib.load('model_v2.pkl')
 features = joblib.load('model_features.pkl')
 
 st.title("✈️ Flight Price Prediction App")
